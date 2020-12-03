@@ -1,6 +1,6 @@
-Current configuration : 1739 bytes
+Current configuration : 1773 bytes
 !
-! Last configuration change at 15:10:49 Seoul Fri May 24 2002
+! Last configuration change at 15:44:49 Seoul Fri May 24 2002
 !
 version 15.1
 service timestamps debug datetime msec
@@ -75,7 +75,7 @@ interface FastEthernet0/0
  speed auto
 !
 interface FastEthernet0/1
- ip address 100.100.0.254 255.255.255.0
+ no ip address
  ip nat inside
  ip virtual-reassembly
  duplex auto
@@ -84,6 +84,7 @@ interface FastEthernet0/1
 !
 interface FastEthernet0/1.1
  encapsulation dot1Q 1 native
+ ip address 100.100.10.254 255.255.255.0
  ip nat inside
  ip virtual-reassembly
 !
@@ -98,9 +99,10 @@ no ip http server
 no ip http secure-server
 !
 !
-ip nat inside source static tcp 100.100.0.10 21 interface FastEthernet0/0 21
+ip nat inside source list 1 pool service overload
 ip route 0.0.0.0 0.0.0.0 FastEthernet0/0 dhcp
 !
+access-list 1 permit 100.100.0.0 0.0.255.255
 !
 !
 !
@@ -127,4 +129,5 @@ line vty 0 4
 !
 scheduler allocate 20000 1000
 end
+
 
