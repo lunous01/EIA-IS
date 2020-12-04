@@ -1,6 +1,6 @@
-Current configuration : 3707 bytes
+Current configuration : 2593 bytes
 !
-! Last configuration change at 07:14:14 Seoul Sat May 25 2002
+! Last configuration change at 07:44:52 Seoul Sat May 25 2002
 !
 version 15.1
 service timestamps debug datetime msec
@@ -20,18 +20,20 @@ no aaa new-model
 clock timezone Seoul 9
 !
 dot11 syslog
- --More--
-*May 24 22:14:14.671: %SYS-5-CONFIG_I: Configured from console ip source-route
+ip source-route
 !
 !
 ip cef
 ip dhcp excluded-address 100.100.0.254
 ip dhcp excluded-address 100.100.0.1
+ip dhcp excluded-address 100.100.1.254
+ip dhcp excluded-address 100.100.1.1
 !
 ip dhcp pool SERVICE
    network 100.100.0.0 255.255.255.0
    default-router 100.100.0.254
    dns-server 168.126.63.1 168.126.63.2
+   lease 3
 !
 ip dhcp pool SERVICE_BACKUP
    network 100.100.1.0 255.255.255.0
@@ -89,7 +91,10 @@ interface FastEthernet0/1
  no mop enabled
 !
 interface FastEthernet0/1.1
- encapsulation dot1Q 1 native
+ encapsulation dot1Q 10
+ ip address 100.10.0.254 255.255.255.0
+ ip nat inside
+ ip virtual-reassembly
 !
 interface FastEthernet0/1.2
  encapsulation dot1Q 40
@@ -102,24 +107,7 @@ no ip http server
 no ip http secure-server
 !
 !
-ip nat service list 10 ftp tcp port 21
 ip nat inside source list 1 interface FastEthernet0/0 overload
-ip nat inside source static tcp 100.100.0.10 21 interface FastEthernet0/0 21
-ip nat inside source static tcp 100.100.0.10 20 interface FastEthernet0/0 20
-ip nat inside source static tcp 100.100.0.5 80 interface FastEthernet0/0 80
-ip nat inside source static tcp 100.100.0.10 8080 interface FastEthernet0/0 8080
-ip nat inside source static udp 100.100.0.5 80 interface FastEthernet0/0 80
-ip nat inside source static tcp 100.100.0.7 32400 interface FastEthernet0/0 32400
-ip nat inside source static udp 100.100.0.7 32400 interface FastEthernet0/0 32400
-ip nat inside source static tcp 100.100.0.8 8888 interface FastEthernet0/0 8888
-ip nat inside source static tcp 100.100.0.5 22 interface FastEthernet0/0 1022
-ip nat inside source static tcp 100.100.0.5 443 interface FastEthernet0/0 443
-ip nat inside source static udp 100.100.0.5 443 interface FastEthernet0/0 443
-ip nat inside source static tcp 100.100.0.51 28015 interface FastEthernet0/0 28015
-ip nat inside source static tcp 100.100.0.51 28016 interface FastEthernet0/0 28016
-ip nat inside source static udp 100.100.0.51 28015 interface FastEthernet0/0 28015
-ip nat inside source static udp 100.100.0.51 28016 interface FastEthernet0/0 28016
-ip nat inside source static tcp 100.100.0.51 22 interface FastEthernet0/0 28014
 ip nat inside source static udp 100.100.0.6 1194 interface FastEthernet0/0 1194
 ip nat inside source static tcp 100.100.0.10 5000 interface FastEthernet0/0 5000
 ip nat inside source static tcp 100.100.0.10 5001 interface FastEthernet0/0 5001
@@ -132,6 +120,7 @@ access-list 1 permit 100.40.0.0 0.0.0.255
 access-list 10 permit 100.100.0.5
 access-list 10 permit 100.100.0.10
 access-list 10 permit 100.40.0.0 0.0.0.255
+access-list 10 permit 100.100.0.0 0.0.0.255
 !
 !
 !
@@ -158,6 +147,7 @@ line vty 0 4
 !
 scheduler allocate 20000 1000
 end
+
 
 
 
